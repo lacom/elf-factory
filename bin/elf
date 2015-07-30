@@ -1,0 +1,325 @@
+#!/usr/bin/env node
+
+
+/**
+ * This script is largely borrowed from TJ Holowaychuk 
+ * and the contributors on the Express Generator project.
+ * Check out Express, support open-source projects, and hack on. 
+ * -Dylan
+ */
+
+var program 			= require('commander');
+var mkdirp 				= require('mkdirp');
+var os 						= require('os');
+var fs 						= require('fs');
+var path 					= require('path');
+var readline 			= require('readline');
+var request 			= require('request');
+var sortedObject 	= require('sorted-object');
+var netrc 				= require('node-netrc');
+
+var _exit = process.exit;
+var eol = os.EOL;
+var pkg = require('../package.json');
+var SITE_URL = 'https://lambda.herokuapp.com';
+var SITE_DOMAIN = 'lambda.herokuapp.com';
+
+var version = pkg.version;
+
+// Re-assign process.exit because of commander
+// TODO: Switch to a different command framework
+process.exit = exit
+
+// CLI
+
+before(program, 'outputHelp', function () {
+  this.allowUnknownOption();
+});
+
+program
+  .version(version)
+  .usage('COMMAND')
+  .command('upload', '=> uploads your interaction')
+  .command('test [value]', '=> runs the current interaction with the supplied input value');
+
+program
+  .command('create [name]')
+  .description('=> creates a new interaction with the specified name')
+  .action(function(name) {
+  	if (name) {
+  		newInteraction(name);
+  	} else {
+  		console.error('You need to supply a name for your interaction. Type "elf" for help.');
+      exit(1);
+  	}
+  });
+
+
+program.parse(process.argv);
+
+
+if (!exit.exited) {
+	if(!program.args.length) {
+    program.help();
+  }
+}
+
+/**
+ * Install a before function; AOP.
+ */
+
+function before(obj, method, fn) {
+  var old = obj[method];
+
+  obj[method] = function () {
+    fn.call(this);
+    old.apply(this, arguments);
+  };
+}
+
+/**
+ * Prompt for confirmation on STDOUT/STDIN
+ */
+
+function confirm(msg, callback) {
+  var rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
+
+  rl.question(msg, function (input) {
+    rl.close();
+    callback(/^y|yes|ok|true$/i.test(input));
+  });
+}
+
+/**
+ * Create application at the given directory `path`.
+ *
+ * @param {String} path
+ */
+
+function createApplication(app_name, path) {
+  var wait = 5;
+
+  console.log();
+  function complete() {
+    if (--wait) return;
+    var prompt = launchedFromCmd() ? '>' : '$';
+
+    console.log();
+    console.log('   install dependencies:');
+    console.log('     %s cd %s && npm install', prompt, path);
+    console.log();
+    console.log('   run the app:');
+
+    if (launchedFromCmd()) {
+      console.log('     %s SET DEBUG=%s:* & npm start', prompt, app_name);
+    } else {
+      console.log('     %s DEBUG=%s:* npm start', prompt, app_name);
+    }
+
+    console.log();
+  }
+
+
+  // JavaScript
+  var index  = loadTemplate('index.js');
+  var dotenv = loadTemplate('.env');
+
+
+	mkdir(path, function() {
+	  // package.json
+	  var pkg = {
+	    name 						: app_name,
+	    version 				: '0.0.0',
+	    description 		: '',
+	    main 						: 'index.js',
+	    author 					: '',
+	    license 				: '',
+	    private 				: true,
+	    scripts 				: { test: 'echo \"Error: no test specified\" && exit 1' },
+	    dependencies 		: {
+	    	"dotenv": "^1.2.0"
+	    },
+	    devDependencies : {
+	    	"del": "^1.2.0",
+		    "gulp": "^3.9.0",
+		    "gulp-install": "^0.4.0",
+		    "gulp-util": "^3.0.6",
+		    "gulp-zip": "^3.0.2",
+		    "node-netrc": "0.0.1",
+		    "request": "^2.58.0",
+		    "run-sequence": "^1.1.1"
+	    }
+	  };
+
+
+	  // sort dependencies like npm(1)
+    pkg.devDependencies = sortedObject(pkg.devDependencies);
+
+
+	  // write files
+	  write(path + '/package.json', JSON.stringify(pkg, null, 2));
+	  write(path + '/index.js', index);
+	  write(path + '/.env', dotenv);
+
+	  complete();
+	});
+}
+
+
+/**
+ * Check if the given directory `path` is empty.
+ *
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function emptyDirectory(path, fn) {
+  fs.readdir(path, function(err, files){
+    if (err && 'ENOENT' != err.code) throw err;
+    fn(!files || !files.length);
+  });
+}
+
+
+/**
+ * Graceful exit for async STDIO
+ */
+
+function exit(code) {
+  // flush output for Node.js Windows pipe bug
+  // https://github.com/joyent/node/issues/6247 is just one bug example
+  // https://github.com/visionmedia/mocha/issues/333 has a good discussion
+  function done() {
+    if (!(draining--)) _exit(code);
+  }
+
+  var draining = 0;
+  var streams = [process.stdout, process.stderr];
+
+  exit.exited = true;
+
+  streams.forEach(function(stream){
+    // submit empty write request and wait for completion
+    draining += 1;
+    stream.write('', done);
+  });
+
+  done();
+}
+
+/**
+ * Determine if launched from cmd.exe
+ */
+
+function launchedFromCmd() {
+  return process.platform === 'win32'
+    && process.env._ === undefined;
+}
+
+/**
+ * Load template file.
+ */
+
+function loadTemplate(name) {
+  return fs.readFileSync(path.join(__dirname, '..', 'templates', name), 'utf-8');
+}
+
+/**
+ * New Interaction
+ */
+
+function newInteraction(cmdName) {
+	var auth = netrc(SITE_DOMAIN);
+
+	// Create function
+	request.post(SITE_URL + '/api/v1/c/', {
+	  auth: {
+    	'user': auth.login,
+    	'pass':  auth.password,
+    	'sendImmediately': true
+	  },
+	  form: { name_display: cmdName }
+	}, function(err, res, body) {
+		if (err) { 
+			console.log('Elf could not be reached, aborting.');
+			exit(1);
+		}
+		if (body == 'Unauthorized') {
+			console.log('Please add your auth credentials to your .netrc file first.');
+			exit(1);
+		} else if (body != 'success') {
+			console.log('That interaction name is taken. Please choose another.');
+			exit(1);
+		} else {
+			// Path
+			cmdName = slugify(cmdName);
+		  var destinationPath = cmdName || '.';
+
+		  // App name
+		  var appName = path.basename(path.resolve(destinationPath));
+
+		  // Generate application
+		  emptyDirectory(destinationPath, function (empty) {
+		    if (empty || program.force) {
+		      createApplication(appName, destinationPath);
+		    } else {
+		      confirm('destination is not empty, continue? [y/N] ', function (ok) {
+		        if (ok) {
+		          process.stdin.destroy();
+		          createApplication(appName, destinationPath);
+		        } else {
+		          console.error('aborting');
+		          exit(1);
+		        }
+		      });
+		    }
+		  });
+		}
+	});
+}
+
+
+/**
+ * URL friendly string
+ *
+ * @param {String} cmdName
+ */
+
+function slugify(cmdName) {
+  return cmdName.toString().toLowerCase()
+    .replace(/\s+/g, '-')        // Replace spaces with -
+    .replace(/[^\w\-]+/g, '')   // Remove all non-word chars
+    .replace(/\-\-+/g, '-')      // Replace multiple - with single -
+    .replace(/^-+/, '')          // Trim - from start of text
+    .replace(/-+$/, '');         // Trim - from end of text
+}
+
+/**
+ * echo str > path.
+ *
+ * @param {String} path
+ * @param {String} str
+ */
+
+function write(path, str, mode) {
+  fs.writeFileSync(path, str, { mode: mode || 0666 });
+  console.log('   \x1b[36mcreate\x1b[0m : ' + path);
+}
+
+/**
+ * Mkdir -p.
+ *
+ * @param {String} path
+ * @param {Function} fn
+ */
+
+function mkdir(path, fn) {
+  mkdirp(path, 0755, function(err){
+    if (err) throw err;
+    console.log('   \033[36mcreate\033[0m : ' + path);
+    fn && fn();
+  });
+}

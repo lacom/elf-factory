@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+
+var program 	= require('commander');
+var fs 				=	require('fs');
+var exec      = require('child_process').exec;
+
+var _exit = process.exit;
+
+
+// Re-assign process.exit because of commander
+// TODO: Switch to a different command framework
+process.exit = exit;
+
+
+var gulpFilePath = '/usr/local/lib/node_modules/elf-factory/templates/gulpfile.js';
+var tempGulpFilePath = process.cwd() + '/gulpfile.js';
+
+console.log('Uploading to Elf...');
+copyFile(gulpFilePath, tempGulpFilePath, function (err, res) {
+	if (err) {
+		console.log('Failed creating gulp file.');
+		console.log(err); 
+		exit(1); 
+	}
+	exec('gulp', function (err, stdout, stderr) {
+		if (err) {
+			console.log('Failed executing gulp file.');
+			console.log(err);
+			exit(1);
+		}
+		fs.unlink(tempGulpFilePath, function (err) {
+    	if (err) { 
+    		console.log(err); 
+    		exit(1);
+    	}
+    	console.log('Success! Interaction uploaded.');
+    	exit(1);
+    });
+	});
+});
+
+
+/**
+ * Graceful exit for async STDIO
+ */
+
+function exit(code) {
+  // flush output for Node.js Windows pipe bug
+  // https://github.com/joyent/node/issues/6247 is just one bug example
+  // https://github.com/visionmedia/mocha/issues/333 has a good discussion
+  function done() {
+    if (!(draining--)) _exit(code);
+  }
+
+  var draining = 0;
+  var streams = [process.stdout, process.stderr];
+
+  exit.exited = true;
+
+  streams.forEach(function(stream){
+    // submit empty write request and wait for completion
+    draining += 1;
+    stream.write('', done);
+  });
+
+  done();
+}
+
+
+function copyFile(source, target, cb) {
+  var cbCalled = false;
+
+  var rd = fs.createReadStream(source);
+  rd.on("error", function(err) {
+    done(err);
+  });
+  var wr = fs.createWriteStream(target);
+  wr.on("error", function(err) {
+    done(err);
+  });
+  wr.on("close", function(ex) {
+    done();
+  });
+  rd.pipe(wr);
+
+  function done(err) {
+    if (!cbCalled) {
+      cb(err);
+      cbCalled = true;
+    }
+  }
+}

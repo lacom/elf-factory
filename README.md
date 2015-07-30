@@ -1,2 +1,2 @@
-# factory
+# elf-factory
 Elf's command generator 
