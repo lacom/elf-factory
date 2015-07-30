@@ -235,7 +235,7 @@ function newInteraction(cmdName) {
 	var auth = netrc(SITE_DOMAIN);
 
 	// Create function
-	request.post(SITE_URL + '/api/v1/c/', {
+	request.post(SITE_URL + '/api/v1/i/', {
 	  auth: {
     	'user': auth.login,
     	'pass':  auth.password,
