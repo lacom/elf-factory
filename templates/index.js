@@ -1,5 +1,5 @@
 // Load any config vars from .env file
-require('dotenv').load();
+require('dotenv').config({ silent: true });
 
 exports.handler = function(event, context) {
 	// event.input [string] will contain any text submitted along with your command

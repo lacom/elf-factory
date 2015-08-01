@@ -59,7 +59,7 @@ var testContext = {
 }
 
 
-// Run the handler method of the interaction script
+// Execute the script
 script.handler(testEvent, testContext);
 
 

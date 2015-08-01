@@ -1,2 +1,2 @@
 # elf-factory
-Elf's command generator 
+Elf's interaction generator 

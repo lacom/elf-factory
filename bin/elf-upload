@@ -1,8 +1,30 @@
 #!/usr/bin/env node
 
-var program 	= require('commander');
-var fs 				=	require('fs');
-var exec      = require('child_process').exec;
+var program 		= require('commander');
+var fs 					=	require('fs');
+var del 				= require('del');
+var netrc 			= require('node-netrc');
+var gulp 				= require('gulp');
+var Config 			= require('../config');
+var install 		= require('gulp-install');
+var zip 				= require('gulp-zip');
+var request 		= require('request');
+var runSequence = require('run-sequence');
+var path 				= require('path');
+var pkg 				= require(path.join(process.cwd(), 'package.json'));
+
+
+/**
+ * Loads the environment vars as set in the projects .env file.
+ * SITE_URL and SITE_DOMAIN in .env will override the default url.
+ */
+require('dotenv').config({ path: path.join(process.cwd(), '.env') });
+
+
+var config = new Config();
+var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
+var SITE_URL 		= process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
+
 
 var _exit = process.exit;
 
@@ -12,31 +34,78 @@ var _exit = process.exit;
 process.exit = exit;
 
 
-var gulpFilePath = '/usr/local/lib/node_modules/elf-factory/templates/gulpfile.js';
-var tempGulpFilePath = process.cwd() + '/gulpfile.js';
+gulp.task('clean', function(cb) {
+	console.log('Cleaning dist files...');
+  return del('./dist',
+    del('./dist.zip', cb)
+  );
+});
+ 
 
-console.log('Uploading to Elf...');
-copyFile(gulpFilePath, tempGulpFilePath, function (err, res) {
-	if (err) {
-		console.log('Failed creating gulp file.');
-		console.log(err); 
-		exit(1); 
-	}
-	exec('gulp', function (err, stdout, stderr) {
-		if (err) {
-			console.log('Failed executing gulp file.');
-			console.log(err);
-			exit(1);
+gulp.task('js', function() {
+	console.log('Creating new dist files...');
+  return gulp.src('index.js')
+    .pipe(gulp.dest('dist/'))
+});
+ 
+
+gulp.task('npm', function() {
+	console.log('Installing dependencies...');
+  return gulp.src('./package.json')
+    .pipe(gulp.dest('./dist/'))
+    .pipe(install({ production: true }));
+});
+ 
+
+gulp.task('zip', function() {
+	console.log('Zipping dist files...');
+  return gulp.src(['dist/**/*', '!dist/package.json', 'dist/.*'])
+    .pipe(zip('dist.zip'))
+    .pipe(gulp.dest('./'));
+});
+ 
+
+gulp.task('upload', function() {
+	console.log('Uploading to Elf...');
+	var data = {
+		'deps' 			: Object.keys(pkg.dependencies),
+		'index.js' 	: fs.createReadStream('./index.js')
+	};
+	if (pkg.description) { data.output_description = pkg.description; }
+	var auth = netrc(SITE_DOMAIN);
+	data[pkg.name + '.zip'] = fs.createReadStream('./dist.zip');
+	return request({
+		uri 			: SITE_URL + '/api/v1/i/' + pkg.name,
+		method 		: 'PUT',
+		formData 	: data,
+		auth			: {
+    	'user': auth.login,
+    	'pass':  auth.password,
+    	'sendImmediately': true
 		}
-		fs.unlink(tempGulpFilePath, function (err) {
-    	if (err) { 
-    		console.log(err); 
-    		exit(1);
-    	}
-    	console.log('Success! Interaction uploaded.');
-    	exit(1);
-    });
+	}, function (err, res, body) {
+		if (err) { console.log(err); }
+		console.log(JSON.parse(body).message);
 	});
+});
+
+
+gulp.task('tasks', function(callback) {
+  return runSequence(
+    ['clean'],
+    ['js', 'npm'],
+    ['zip'],
+    ['upload'],
+    callback
+  );
+});
+
+
+// Run the gulp tasks
+gulp.start('tasks', function(err, res) {
+	if (err) { console.log(err); } 
+	else { console.log('Done.'); }
+	exit(1);
 });
 
 
@@ -64,29 +133,4 @@ function exit(code) {
   });
 
   done();
-}
-
-
-function copyFile(source, target, cb) {
-  var cbCalled = false;
-
-  var rd = fs.createReadStream(source);
-  rd.on("error", function(err) {
-    done(err);
-  });
-  var wr = fs.createWriteStream(target);
-  wr.on("error", function(err) {
-    done(err);
-  });
-  wr.on("close", function(ex) {
-    done();
-  });
-  rd.pipe(wr);
-
-  function done(err) {
-    if (!cbCalled) {
-      cb(err);
-      cbCalled = true;
-    }
-  }
 }

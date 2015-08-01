@@ -1,3 +1,5 @@
+// Deprecated file [7/31/15]
+
 var gulp 				= require('gulp');
 var gutil 			= require('gulp-util');
 var del 				= require('del');
@@ -10,8 +12,8 @@ var netrc 			= require('node-netrc');
 var pkg		 			= require('./package.json');
 
 
-var SITE_URL = 'https://lambda.herokuapp.com';
-var SITE_DOMAIN = 'lambda.herokuapp.com';
+var SITE_URL = 'http://localhost:3000';
+var SITE_DOMAIN = 'localhost:3000';
 
  
 gulp.task('clean', function(cb) {
