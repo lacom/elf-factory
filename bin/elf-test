@@ -4,6 +4,7 @@ var program 	= require('commander');
 var fs 				=	require('fs');
 var exec      = require('child_process').exec;
 var path 			= require('path');
+v
 
 var _exit = process.exit;
 
@@ -59,7 +60,7 @@ var testContext = {
 }
 
 
-// Execute the script
+// Run the handler method of the interaction script
 script.handler(testEvent, testContext);
 
 
