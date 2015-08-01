@@ -109,7 +109,11 @@ function confirm(msg, callback) {
  */
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 function createApplication(app_name, path, env) {
+=======
+function createInteraction(app_name, path) {
+>>>>>>> Stashed changes
 =======
 function createInteraction(app_name, path) {
 >>>>>>> Stashed changes
@@ -266,7 +270,11 @@ function newInteraction(cmdName, env) {
 		  emptyDirectory(destinationPath, function (empty) {
 		    if (empty || program.force) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		      createApplication(appName, destinationPath, env);
+=======
+		      createInteraction(interactionName, destinationPath);
+>>>>>>> Stashed changes
 =======
 		      createInteraction(interactionName, destinationPath);
 >>>>>>> Stashed changes
@@ -275,7 +283,11 @@ function newInteraction(cmdName, env) {
 		        if (ok) {
 		          process.stdin.destroy();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		          createApplication(appName, destinationPath, env);
+=======
+		          createInteraction(interactionName, destinationPath);
+>>>>>>> Stashed changes
 =======
 		          createInteraction(interactionName, destinationPath);
 >>>>>>> Stashed changes
