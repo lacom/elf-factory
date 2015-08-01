@@ -60,7 +60,8 @@ program
   		console.error('You need to supply a name for your interaction. Type "elf" for help.');
       exit(1);
   	}
-  });
+  })
+  .action;
 
 
 program.parse(process.argv);
@@ -102,12 +103,16 @@ function confirm(msg, callback) {
 }
 
 /**
- * Create application at the given directory `path`.
+ * Create interaction at the given directory `path`. 
  *
  * @param {String} path
  */
 
+<<<<<<< Updated upstream
 function createApplication(app_name, path, env) {
+=======
+function createInteraction(app_name, path) {
+>>>>>>> Stashed changes
   var wait = 5;
 
   console.log();
@@ -254,18 +259,26 @@ function newInteraction(cmdName, env) {
 			cmdName = slugify(cmdName);
 		  var destinationPath = cmdName || '.';
 
-		  // App name
-		  var appName = path.basename(path.resolve(destinationPath));
+		  // Interaction name placed onto server
+		  var interactionName = path.basename(path.resolve(destinationPath));
 
-		  // Generate application
+		  // Generate interaction on server
 		  emptyDirectory(destinationPath, function (empty) {
 		    if (empty || program.force) {
+<<<<<<< Updated upstream
 		      createApplication(appName, destinationPath, env);
+=======
+		      createInteraction(interactionName, destinationPath);
+>>>>>>> Stashed changes
 		    } else {
 		      confirm('destination is not empty, continue? [y/N] ', function (ok) {
 		        if (ok) {
 		          process.stdin.destroy();
+<<<<<<< Updated upstream
 		          createApplication(appName, destinationPath, env);
+=======
+		          createInteraction(interactionName, destinationPath);
+>>>>>>> Stashed changes
 		        } else {
 		          console.error('aborting');
 		          exit(1);
@@ -276,6 +289,57 @@ function newInteraction(cmdName, env) {
 		}
 	});
 }
+
+
+function newDomain(dmnName){
+  var auth = netrc(SITE_DOMAIN);
+
+ request.post(SITE_URL + '/api/v1/d/', {
+    auth: {
+     'user' : auth.login,
+      'pass' : auth.password,
+      'sendImmediately' : true
+  },
+  form: { name_display: dmnName }
+  }, function(err, res, body){
+    if (err) {
+      console.log("Elf could not be reached, aborting");
+      exit(1);
+    } else if (body != 'Unauthorized'){
+      console.log('Please add your auth credentials to your .netrc file first.');
+      exit(1);
+    } else if (body != success){
+      console.log('Domain name has been taken. Perhaps take a look as to whether the existing domain meets your needs.');
+     exit(1);
+    } else {
+      // Path of the domain name.
+      dmnName = slugify(dmnName);
+      var destinationPath = dmnName || '.';
+
+      // Domain Name
+      var domainName = path.basename(path.resolve(destinationPath));
+
+      // Generate domain
+      emptyDirectory(destinationPath, function (empty){
+      if (empty || program.force){
+        createApplication(appName, destinationPath);
+      } else {
+        confirm('destination is not empty, continue? [y/N] ', function (ok) {
+          if (ok) {
+            process.stdin.destroy();
+            createApplication(appName, destinationPath);
+          } else {
+            console.error('aborting');
+            exit(1);
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
+
 
 
 /**
