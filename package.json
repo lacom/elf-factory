@@ -1,7 +1,7 @@
 {
   "name": "elf-factory",
   "description": "Elf's interaction generator",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Dylan La Com <dylan.lacom@gmail.com>",
   "license": "MIT",
   "dependencies": {
@@ -27,6 +27,7 @@
     "config.js",
     "bin/",
     "gulpfile.js",
+    "README.md",
     "templates/"
   ],
   "scripts": {
