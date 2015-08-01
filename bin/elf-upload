@@ -12,7 +12,7 @@ var request 		= require('request');
 var runSequence = require('run-sequence');
 var path 				= require('path');
 var pkg 				= require(path.join(process.cwd(), 'package.json'));
-
+var util        = require('../lib/utilities.js')
 
 /**
  * Loads the environment vars as set in the projects .env file.
@@ -105,32 +105,6 @@ gulp.task('tasks', function(callback) {
 gulp.start('tasks', function(err, res) {
 	if (err) { console.log(err); } 
 	else { console.log('Done.'); }
-	exit(1);
+	util.exit(1);
 });
 
-
-/**
- * Graceful exit for async STDIO
- */
-
-function exit(code) {
-  // flush output for Node.js Windows pipe bug
-  // https://github.com/joyent/node/issues/6247 is just one bug example
-  // https://github.com/visionmedia/mocha/issues/333 has a good discussion
-  function done() {
-    if (!(draining--)) _exit(code);
-  }
-
-  var draining = 0;
-  var streams = [process.stdout, process.stderr];
-
-  exit.exited = true;
-
-  streams.forEach(function(stream){
-    // submit empty write request and wait for completion
-    draining += 1;
-    stream.write('', done);
-  });
-
-  done();
-}

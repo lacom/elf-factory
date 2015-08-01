@@ -57,10 +57,10 @@ program
   	if (name) {
   		var env = args.environment ? args.environment : '';
   		newInteraction(name, env);
-      console.log("Please provide a domain for your interaction:");
+      console.log("DEVELOPMENT: When should the user enter the domain for their function?");
   	} else {
   		console.error('You need to supply a name for your interaction. Type "elf" for help.');
-      exit(1);
+      util.exit(1);
   	}
   });
   
@@ -140,7 +140,7 @@ function createInteraction(app_name, path) {
   var dotenv = (env && env == 'development') ? 'NODE_ENV=development\r\nSITE_URL=http://localhost:3000\r\nSITE_DOMAIN=localhost:3000' : 'NODE_ENV=development';
 
 
-	mkdir(path, function() {
+	util.mkdir(path, function() {
 	  // package.json
 	  var pkg = {
 	    name 						: app_name,
@@ -158,55 +158,15 @@ function createInteraction(app_name, path) {
 
 
 	  // write files
-	  write(path + '/package.json', JSON.stringify(pkg, null, 2));
-	  write(path + '/index.js', index);
-	  write(path + '/.env', dotenv);
+	  util.write(path + '/package.json', JSON.stringify(pkg, null, 2));
+	  util.write(path + '/index.js', index);
+	  util.write(path + '/.env', dotenv);
 
 	  complete();
 	});
 }
 
 
-/**
- * Check if the given directory `path` is empty.
- *
- * @param {String} path
- * @param {Function} fn
- */
-
-function emptyDirectory(path, fn) {
-  fs.readdir(path, function(err, files){
-    if (err && 'ENOENT' != err.code) throw err;
-    fn(!files || !files.length);
-  });
-}
-
-
-/**
- * Graceful exit for async STDIO
- */
-
-function exit(code) {
-  // flush output for Node.js Windows pipe bug
-  // https://github.com/joyent/node/issues/6247 is just one bug example
-  // https://github.com/visionmedia/mocha/issues/333 has a good discussion
-  function done() {
-    if (!(draining--)) _exit(code);
-  }
-
-  var draining = 0;
-  var streams = [process.stdout, process.stderr];
-
-  exit.exited = true;
-
-  streams.forEach(function(stream){
-    // submit empty write request and wait for completion
-    draining += 1;
-    stream.write('', done);
-  });
-
-  done();
-}
 
 /**
  * Determine if launched from cmd.exe
@@ -245,14 +205,14 @@ function newInteraction(cmdName, env) {
 	}, function(err, res, body) {
 		if (err) { 
 			console.log('Elf could not be reached, aborting.');
-			exit(1);
+			util.exit(1);
 		}
 		if (body == 'Unauthorized') {
 			console.log('Please add your auth credentials to your .netrc file first.');
-			exit(1);
+			util.exit(1);
 		} else if (body != 'success') {
 			console.log(body);
-			exit(1);
+			util.exit(1);
 		} else {
 			// Path
 			cmdName = slugify(cmdName);
@@ -262,7 +222,7 @@ function newInteraction(cmdName, env) {
 		  var interactionName = path.basename(path.resolve(destinationPath));
 
 		  // Generate interaction on server
-		  emptyDirectory(destinationPath, function (empty) {
+		  util.emptyDirectory(destinationPath, function (empty) {
 		    if (empty || program.force) {
 		      createInteraction(interactionName, destinationPath);
 
@@ -274,7 +234,7 @@ function newInteraction(cmdName, env) {
 
 		        } else {
 		          console.error('aborting');
-		          exit(1);
+		          util.exit(1);
 		        }
 		      });
 		    }
@@ -297,13 +257,13 @@ function newDomain(dmnName){
   }, function(err, res, body){
     if (err) {
       console.log("Elf could not be reached, aborting");
-      exit(1);
+      util.exit(1);
     } else if (body != 'Unauthorized'){
       console.log('Please add your auth credentials to your .netrc file first.');
-      exit(1);
+      util.exit(1);
     } else if (body != success){
       console.log('Domain name has been taken. Perhaps take a look as to whether the existing domain meets your needs.');
-     exit(1);
+     util.exit(1);
     } else {
       // Path of the domain name.
       dmnName = slugify(dmnName);
@@ -313,7 +273,7 @@ function newDomain(dmnName){
       var domainName = path.basename(path.resolve(destinationPath));
 
       // Generate domain
-      emptyDirectory(destinationPath, function (empty){
+      util.emptyDirectory(destinationPath, function (empty){
       if (empty || program.force){
         createApplication(appName, destinationPath);
       } else {
@@ -323,7 +283,7 @@ function newDomain(dmnName){
             createApplication(appName, destinationPath);
           } else {
             console.error('aborting');
-            exit(1);
+            util.exit(1);
             }
           });
         }
