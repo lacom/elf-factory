@@ -6,16 +6,8 @@ var exec      = require('child_process').exec;
 var path 			= require('path');
 var util      = require('../lib/utilities.js')
 
-var _exit = process.exit;
-
-
-// Re-assign process.exit because of commander
-// TODO: Switch to a different command framework
-process.exit = exit;
-
 
 program
-	// .option('-i, --input <value>', 'Run the test with the specified input value. If none supplied, will look for INPUT_VALUE in the .env file.')
   .option('-c, --client <type>', 'Run the test with the specified client type [api]')
   .parse(process.argv);
 
@@ -64,7 +56,7 @@ var testContext = {
 script.handler(testEvent, testContext);
 
 
-if (!exit.exited) {
+if (!util.exit.exited) {
 	if(!program.args.length) {
     program.help();
   }

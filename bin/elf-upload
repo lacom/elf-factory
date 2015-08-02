@@ -14,6 +14,7 @@ var path 				= require('path');
 var pkg 				= require(path.join(process.cwd(), 'package.json'));
 var util        = require('../lib/utilities.js')
 
+
 /**
  * Loads the environment vars as set in the projects .env file.
  * SITE_URL and SITE_DOMAIN in .env will override the default url.
@@ -24,14 +25,6 @@ require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 var config = new Config();
 var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
 var SITE_URL 		= process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
-
-
-var _exit = process.exit;
-
-
-// Re-assign process.exit because of commander
-// TODO: Switch to a different command framework
-process.exit = exit;
 
 
 gulp.task('clean', function(cb) {
@@ -107,4 +100,11 @@ gulp.start('tasks', function(err, res) {
 	else { console.log('Done.'); }
 	util.exit(1);
 });
+
+
+if (!util.exit.exited) {
+	if(!program.args.length) {
+    program.help();
+  }
+}
 

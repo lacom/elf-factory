@@ -2,31 +2,15 @@
 
 
 /**
- * This script is largely borrowed from TJ Holowaychuk 
+ * This script is inspired by TJ Holowaychuk 
  * and the contributors on the Express Generator project.
  * Check out Express, support open-source projects, and hack on. 
  * - Dylan
  */
 
-var program 	= require('commander');
-var mkdirp 		= require('mkdirp');
-var os 				= require('os');
-var fs 				= require('fs');
-var path 			= require('path');
-var readline 	= require('readline');
-var request 	= require('request');
-var netrc 		= require('node-netrc');
-var Config 		= require('../config');
-var pkg 			= require('../package.json');
-var util      = require('../lib/utilities.js')
-
-var config = new Config();
-var SITE_URL = config.SITE_URL;
-var SITE_DOMAIN = config.SITE_DOMAIN;
-
-
-var _exit = process.exit;
-var eol = os.EOL;
+var program = require('commander');
+var pkg 		= require('../package.json');
+var util 		= require('../lib/utilities');
 
 
 var version = pkg.version;
@@ -34,7 +18,7 @@ var version = pkg.version;
 
 // Re-assign process.exit because of commander
 // TODO: Switch to a different command framework
-process.exit = exit
+process.exit = util.exit
 
 // CLI
 
@@ -42,17 +26,18 @@ before(program, 'outputHelp', function () {
   this.allowUnknownOption();
 });
 
+
 program
   .version(version)
   .usage('COMMAND')
   .command('upload', '=> uploads your interaction')
-  .command('test [value]', '=> runs the current interaction with the supplied input value');
-  .command('open [interaction]', '=> opens the webpage of the provided interaction');
+  .command('test [value]', '=> runs the current interaction with the supplied input value')
+  .command('open [interaction]', '=> opens the webpage of the provided interaction')
   .command('create [interaction]', '=> creates a new interaction with the specified name')
   .parse(process.argv);
 
 
-if (!exit.exited) {
+if (!util.exit.exited) {
 	if(!program.args.length) {
     program.help();
   }
@@ -70,12 +55,4 @@ function before(obj, method, fn) {
     old.apply(this, arguments);
   };
 }
-
-/* TODO TODO TODO
-function createDomain(dmnName, path){
-
-
-
-}
-*/
 
