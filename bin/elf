@@ -10,7 +10,7 @@
 
 var program = require('commander');
 var pkg 		= require('../package.json');
-var util 		= require('../lib/utilities');
+var util 		= require('../lib/utilities.js');
 
 
 var version = pkg.version;
