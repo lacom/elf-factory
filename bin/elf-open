@@ -34,15 +34,18 @@ openURL(interactionName, env)
 
 function openURL(interactionSlug, env){
 
-  var siteUrl = (env && env == 'development') ? 'http://localhost:3000' : SITE_URL;
-  var siteDomain = (env && env == 'development') ? 'localhost:3000' : SITE_DOMAIN;
+  var siteUrl = (env == 'development') ? 'http://localhost:3000' : SITE_URL;
+  var siteDomain = (env == 'development') ? 'localhost:3000' : SITE_DOMAIN;
   var auth = netrc(siteDomain);
 
+  if(env){
+    console.log("Please upload your interaction to see the correctly rendered web page.")
+  }
 
   request.get(siteUrl + '/api/v1/i/' + interactionSlug,  auth: {
      'user': auth.login,
      'pass':  auth.password,
-     'sendImmediately': true
+     'sendImmediately': trueor
     }, 
     function(error, response, body){
     	if(error){
