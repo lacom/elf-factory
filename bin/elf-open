@@ -30,6 +30,7 @@ interactionName = util.slugify(name);
 //Environment flag ternary; development flag should source interaciton name from local host
 var env = program.environment ? program.environment : '';
 
+openURL(interactionName, env)
 
 function openURL(interactionSlug, env){
 
