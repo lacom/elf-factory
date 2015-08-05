@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-var program 		= require('commander');
-var fs 					=	require('fs');
-var del 				= require('del');
-var netrc 			= require('node-netrc');
-var gulp 				= require('gulp');
-var Config 			= require('../config');
-var install 		= require('gulp-install');
-var zip 				= require('gulp-zip');
-var request 		= require('request');
+var program = require('commander');
+var fs = require('fs');
+var del = require('del');
+var netrc = require('node-netrc');
+var gulp = require('gulp');
+var Config = require('../config');
+var install = require('gulp-install');
+var zip = require('gulp-zip');
+var request = require('request');
 var runSequence = require('run-sequence');
-var path 				= require('path');
-var pkg 				= require(path.join(process.cwd(), 'package.json'));
-var util        = require('../lib/utilities.js')
+var path = require('path');
+var pkg = require(path.join(process.cwd(), 'package.json'));
+var util = require('../lib/utilities.js')
 
 
 /**
@@ -24,7 +24,7 @@ require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
 var config = new Config();
 var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
-var SITE_URL 		= process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
+var SITE_URL = process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
 
 
 gulp.task('clean', function(cb) {
