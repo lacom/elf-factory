@@ -34,8 +34,10 @@
     "LICENSE",
     "config.js",
     "bin/",
+    "lib/",
     "gulpfile.js",
     "README.md",
+    "CHANGELOG.md",
     "templates/"
   ],
   "scripts": {
