@@ -2,8 +2,15 @@
   "name": "elf-factory",
   "description": "Elf's interaction generator",
   "version": "0.2.0",
-  "author": "Dylan La Com <dylan.lacom@gmail.com>",
   "license": "MIT",
+  "author": "Dylan La Com <dylan.lacom@gmail.com>",
+  "contributors": [
+  	"Carl Mueller (https://github.com/cmuell89)"
+  ],
+  "repository" : { 
+  	"type" : "git", 
+  	"url" : "https://github.com/lacom/elf-factory"
+  },
   "dependencies": {
     "commander": "2.7.1",
     "del": "^1.2.0",
