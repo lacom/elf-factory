@@ -7,6 +7,11 @@ var path = require('path');
 var util = require('../lib/utilities.js')
 
 
+// Re-assign process.exit because of commander
+// TODO: Switch to a different command framework
+process.exit = util.exit;
+
+
 program
   .option('-c, --client <type>', 'Run the test with the specified client type [api]')
   .parse(process.argv);

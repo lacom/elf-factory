@@ -12,6 +12,11 @@ var SITE_URL = config.SITE_URL;
 var SITE_DOMAIN = config.SITE_DOMAIN;
 
 
+// Re-assign process.exit because of commander
+// TODO: Switch to a different command framework
+process.exit = util.exit;
+
+
 // Parse the command for args and flags
 program
   .option('-e, --environment <type>', 'Used for development of this CLI tool.')

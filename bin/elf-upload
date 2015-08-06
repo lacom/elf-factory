@@ -12,7 +12,7 @@ var request = require('request');
 var runSequence = require('run-sequence');
 var path = require('path');
 var pkg = require(path.join(process.cwd(), 'package.json'));
-var util = require('../lib/utilities')
+var util = require('../lib/utilities');
 
 
 /**
@@ -21,8 +21,18 @@ var util = require('../lib/utilities')
  */
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
+
 var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
 var SITE_URL = process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
+
+
+// Re-assign process.exit because of commander
+// TODO: Switch to a different command framework
+process.exit = util.exit;
+
+
+// Parse the command for args and flags
+program.parse(process.argv);
 
 
 gulp.task('clean', function(cb) {
@@ -67,7 +77,7 @@ gulp.task('upload', function() {
 	data[pkg.name + '.zip'] = fs.createReadStream('./dist.zip');
 	return request({
 		uri 			: SITE_URL + '/api/v1/i/' + pkg.name,
-		method 		: 'PUT',
+		method 		: 'POST',
 		formData 	: data,
 		auth			: {
     	'user': auth.login,
@@ -99,10 +109,4 @@ gulp.start('tasks', function(err, res) {
 	util.exit(1);
 });
 
-
-if (!util.exit.exited) {
-	if(!program.args.length) {
-    program.help();
-  }
-}
 
