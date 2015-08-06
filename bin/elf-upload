@@ -12,7 +12,7 @@ var request = require('request');
 var runSequence = require('run-sequence');
 var path = require('path');
 var pkg = require(path.join(process.cwd(), 'package.json'));
-var util = require('../lib/utilities.js')
+var util = require('../lib/utilities')
 
 
 /**

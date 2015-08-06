@@ -5,7 +5,7 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var open = require('open');
 var request = require('request');
-var util = require('../lib/utilities.js');
+var util = require('../lib/utilities');
 
 var SITE_URL = config.SITE_URL;
 var SITE_DOMAIN = config.SITE_DOMAIN;
@@ -39,8 +39,8 @@ function openURL(interactionSlug, env){
   var auth = netrc(siteDomain);
 
   if(env){
-    console.log("Please upload your interaction to see the correctly rendered web page.")
-  }
+    console.log("Reminder: Please upload your interaction to see the correctly rendered web page.")
+  };
 
   request.get(siteUrl + '/api/v1/i/' + interactionSlug,  auth: {
      'user': auth.login,
