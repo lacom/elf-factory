@@ -4,12 +4,10 @@ var program = require('commander');
 var path = require('path');
 var request = require('request');
 var netrc = require('node-netrc');
-var Config = require('../config');
+var config = require('../config')();
 var pkg = require('../package.json');
 var util = require('../lib/utilities')
 
-
-var config = new Config();
 var SITE_URL = config.SITE_URL;
 var SITE_DOMAIN = config.SITE_DOMAIN;
 
@@ -50,8 +48,8 @@ if (!util.exit.exited) {
  */
 function newInteraction(nameDisplay, env) {
 
-	var siteUrl = (env && env == 'development') ? 'http://localhost:3000' : SITE_URL;
-	var siteDomain = (env && env == 'development') ? 'localhost:3000' : SITE_DOMAIN;
+	var siteUrl = (env == 'development') ? 'http://localhost:3000' : SITE_URL;
+	var siteDomain = (env == 'development') ? 'localhost:3000' : SITE_DOMAIN;
 
 
 	// Get auth creds from netrc file
@@ -68,6 +66,8 @@ function newInteraction(nameDisplay, env) {
 	  form: { name_display: nameDisplay }
 	}, function(err, res, body) {
 		if (err) { 
+			console.log(auth);
+			console.log(err);
 			console.log('Elf could not be reached, aborting.');
 			util.exit(1);
 		}

@@ -5,7 +5,7 @@ var fs = require('fs');
 var del = require('del');
 var netrc = require('node-netrc');
 var gulp = require('gulp');
-var Config = require('../config');
+var config = require('../config')();
 var install = require('gulp-install');
 var zip = require('gulp-zip');
 var request = require('request');
@@ -21,8 +21,6 @@ var util = require('../lib/utilities')
  */
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
 
-
-var config = new Config();
 var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
 var SITE_URL = process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
 
