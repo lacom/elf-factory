@@ -73,6 +73,7 @@ gulp.task('upload', function() {
 		'index.js' 	: fs.createReadStream('./index.js')
 	};
 	if (pkg.description) { data.output_description = pkg.description; }
+	if (pkg.repository && pkg.repository.url) { data.repo_url = pkg.repository.url }
 	var auth = netrc(SITE_DOMAIN);
 	data[pkg.name + '.zip'] = fs.createReadStream('./dist.zip');
 	return request({

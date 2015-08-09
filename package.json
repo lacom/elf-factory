@@ -1,7 +1,7 @@
 {
   "name": "elf-factory",
   "description": "Elf's interaction generator",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "license": "MIT",
   "author": "Dylan La Com <dylan.lacom@gmail.com>",
   "contributors": [

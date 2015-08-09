@@ -1,5 +1,9 @@
 Change Log
 - - -
+## v0.3.0 (8/9/15)
+- Package.json repo url now sent to Elf on upload
+## v0.2.2 (8/6/15)
+- Added lib/ to array of files in package.json
 ## v0.2.1 (8/6/15)
 - Fixed bug with upload command
 ## v0.2.0 (8/5/15)
