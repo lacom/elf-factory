@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.3.1 (8/30/15)
+- New package name! Hello, Nerul.
 ## v0.3.0 (8/9/15)
 - Package.json repo url now sent to Elf on upload
 ## v0.2.2 (8/6/15)

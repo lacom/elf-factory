@@ -27,7 +27,7 @@ program
 if (program.args.length > 0) {
   var name = program.args[0];
 } else {
-  console.log('You need to supply a name for your interaction. Type "elf" for help.');
+  console.log('You need to supply a name for your interaction. Type "nerul" for help.');
   util.exit(1);
 }
 
@@ -46,10 +46,10 @@ function openURL(interactionSlug, env){
   var auth = netrc(siteDomain);
 
   if(env){
-    console.log("\r\nReminder: Remember to run 'elf upload' to update your live interaction.")
+    console.log("\r\nReminder: Remember to run 'nerul upload' to update your live interaction.")
   };
 
-  request.get(siteUrl + '/api/v1/i/' + interactionSlug,  {auth: {
+  request.get(siteUrl + '/api/v1/n/' + interactionSlug,  {auth: {
      'user': auth.login,
      'pass':  auth.password,
      'sendImmediately': true
@@ -65,7 +65,7 @@ function openURL(interactionSlug, env){
       }else{
     		var serverResponse = JSON.parse(body)
         console.log(serverResponse.message + "\r\n");
-    		open(siteUrl + '/i/' + interactionSlug);
+    		open(siteUrl + '/n/' + interactionSlug);
     	}
   });
 }

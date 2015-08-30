@@ -27,7 +27,7 @@ program
 if (program.args.length > 0) {
 	var name = program.args[0];
 } else {
-	console.log('You need to supply a name for your interaction. Type "elf" for help.');
+	console.log('You need to supply a name for your interaction. Type "nerul" for help.');
 	util.exit(1);
 }
 
@@ -62,7 +62,7 @@ function newInteraction(nameDisplay, env) {
 
 
 	// Create function
-	request.post(siteUrl + '/api/v1/i/', {
+	request.post(siteUrl + '/api/v1/n/', {
 	  auth: {
     	'user': auth.login,
     	'pass':  auth.password,
@@ -73,7 +73,7 @@ function newInteraction(nameDisplay, env) {
 		if (err) { 
 			console.log(auth);
 			console.log(err);
-			console.log('Elf could not be reached, aborting.');
+			console.log('Nerul could not be reached, aborting.');
 			util.exit(1);
 		}
 		if (body == 'Unauthorized') {

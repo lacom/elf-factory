@@ -23,7 +23,7 @@ var testClient = program.client;
 
 if (!testClient) { testClient = 'api' }
 if (!testValue) { 
-	console.log('Please provide an input value to test. Wrap phrases in double-quotes. Type "elf" for help.'); 
+	console.log('Please provide an input value to test. Wrap phrases in double-quotes. Type "nerul" for help.'); 
 	util.exit(1);
 }
 
@@ -48,7 +48,7 @@ var testContext = {
 		console.log('The test completed successfully!');
 		console.log('Your interaction returned:\r\n');
 		console.log(res);
-		console.log('\r\nType "elf upload" when you\'re ready to upload your interaction to elf.');
+		console.log('\r\nType "Nerul upload" when you\'re ready to upload your interaction to Nerul.');
 	},
 
 	error: function(err) {

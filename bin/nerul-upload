@@ -67,7 +67,7 @@ gulp.task('zip', function() {
  
 
 gulp.task('upload', function() {
-	console.log('Uploading to Elf...');
+	console.log('Uploading to Nerul...');
 	var data = {
 		'deps' 			: Object.keys(pkg.dependencies),
 		'index.js' 	: fs.createReadStream('./index.js')
@@ -77,7 +77,7 @@ gulp.task('upload', function() {
 	var auth = netrc(SITE_DOMAIN);
 	data[pkg.name + '.zip'] = fs.createReadStream('./dist.zip');
 	return request({
-		uri 			: SITE_URL + '/api/v1/i/' + pkg.name,
+		uri 			: SITE_URL + '/api/v1/n/' + pkg.name,
 		method 		: 'POST',
 		formData 	: data,
 		auth			: {
