@@ -49,7 +49,7 @@ function openURL(interactionSlug, env){
     console.log("\r\nReminder: Remember to run 'nerul upload' to update your live interaction.")
   };
 
-  request.get(siteUrl + '/api/v1/n/' + interactionSlug,  {auth: {
+  request.get(siteUrl + '/nodes/' + interactionSlug,  {auth: {
      'user': auth.login,
      'pass':  auth.password,
      'sendImmediately': true

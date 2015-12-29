@@ -1,0 +1,70 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var path = require('path');
+var request = require('request');
+var netrc = require('node-netrc');
+var config = require('../config')();
+var pkg = require(path.join(process.cwd(), 'package.json'));
+var util = require('../lib/utilities')
+
+
+/**
+ * Loads the environment vars as set in the projects .env file.
+ * SITE_URL and SITE_DOMAIN in .env will override the default url.
+ */
+require('dotenv').config({ path: path.join(process.cwd(), '.env') });
+
+
+var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
+var SITE_URL = process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
+
+console.log('Talking to the mothership...');
+
+// Re-assign process.exit because of commander
+// TODO: Switch to a different command framework
+process.exit = util.exit;
+
+
+// Parse the command for args and flags
+program.parse(process.argv);
+
+
+// Create a new resource on the server
+createNode(function(err, status, message) {
+	if (err || status === 500) {
+		console.log('ERROR: Something went wrong. Please contact us at support@lightningbot.com');
+		util.exit();
+	}
+
+	if (status === 400) {
+		return console.log('There is already a node with this name in your account. Use the "upload" command to update it.');
+	}
+
+	if (status === 200) {
+		return console.log('BEE BOP! Your node was successfully added to your account. Make sure to run the "upload" command to upload your node\'s code.');
+	}
+
+	if (!util.exit.exited) {
+		if(!program.args.length) {
+	    program.help();
+	  }
+	}
+});
+
+
+/**
+ * Create a new resource on the server
+ * Will fail if resource with given name already exists
+ */
+function createNode(cb) {
+	// Get auth creds from netrc file
+	var auth = netrc(SITE_DOMAIN);
+
+	request.post(SITE_URL + '/nodes', {
+	  'auth': { 'bearer': auth.password },
+	  'form': { 'name' : pkg.name }
+	}, function(err, res, body) {
+		return cb(err, res.statusCode, body.message);
+	});
+}

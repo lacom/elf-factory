@@ -1,5 +1,8 @@
 Change Log
 - - -
+## v0.3.2 (12/28/15)
+- test command now works with promises
+- new init command decouples creation of node on server with updating of node
 ## v0.3.1 (8/30/15)
 - New package name! Hello, Nerul.
 ## v0.3.0 (8/9/15)

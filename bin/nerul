@@ -30,6 +30,7 @@ program
   .version(version)
   .usage('COMMAND')
   .command('upload', '=> uploads your interaction')
+  .command('init', '=> creates a new node on the server')
   .command('test [value]', '=> runs the current interaction with the supplied input value')
   .command('open [interaction]', '=> opens the webpage of the provided interaction')
   .command('create [interaction]', '=> creates a new interaction with the specified name')

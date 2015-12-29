@@ -1,7 +1,7 @@
 {
   "name": "nerul",
   "description": "A tool for developing nodes on the Nerul platform",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "license": "MIT",
   "author": "Dylan La Com <dylan.lacom@gmail.com>",
   "contributors": [

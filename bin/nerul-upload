@@ -45,7 +45,14 @@ gulp.task('clean', function(cb) {
 
 gulp.task('js', function() {
 	console.log('Creating new dist files...');
-  return gulp.src('index.js')
+  return gulp.src(['index.js', 'package.json'])
+    .pipe(gulp.dest('dist/'))
+});
+
+
+gulp.task('env', function() {
+	console.log('Setting up env variables...');
+  return gulp.src('.env')
     .pipe(gulp.dest('dist/'))
 });
  
@@ -67,27 +74,21 @@ gulp.task('zip', function() {
  
 
 gulp.task('upload', function() {
-	console.log('Uploading to Nerul...');
+	console.log('Uploading...');
 	var data = {
-		'deps' 			: Object.keys(pkg.dependencies),
-		'index.js' 	: fs.createReadStream('./index.js')
+		'index' : fs.createReadStream('./index.js'),
+		'dist'	: fs.createReadStream('./dist.zip')
 	};
-	if (pkg.description) { data.output_description = pkg.description; }
-	if (pkg.repository && pkg.repository.url) { data.repo_url = pkg.repository.url }
+	if (pkg.repository && pkg.repository.url) data.repo_url = pkg.repository.url;
 	var auth = netrc(SITE_DOMAIN);
-	data[pkg.name + '.zip'] = fs.createReadStream('./dist.zip');
-	return request({
-		uri 			: SITE_URL + '/api/v1/n/' + pkg.name,
-		method 		: 'POST',
-		formData 	: data,
-		auth			: {
-    	'user': auth.login,
-    	'pass':  auth.password,
-    	'sendImmediately': true
-		}
+	return request.post({
+		'url' 			: SITE_URL + '/nodes/' + pkg.name + '/upload',
+		'formData' 	: data,
+		'auth'			: { 'bearer' : auth.password }
 	}, function (err, res, body) {
 		if (err) { console.log(err); }
-		console.log(JSON.parse(body).message);
+		var message = JSON.parse(body).message;
+		console.log('\r\n' + message);
 	});
 });
 
@@ -95,7 +96,7 @@ gulp.task('upload', function() {
 gulp.task('tasks', function(callback) {
   return runSequence(
     ['clean'],
-    ['js', 'npm'],
+    ['js', 'env', 'npm'],
     ['zip'],
     ['upload'],
     callback
@@ -106,7 +107,6 @@ gulp.task('tasks', function(callback) {
 // Run the gulp tasks
 gulp.start('tasks', function(err, res) {
 	if (err) { console.log(err); } 
-	else { console.log('Done.'); }
 	util.exit(1);
 });
 

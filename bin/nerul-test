@@ -12,57 +12,62 @@ var util = require('../lib/utilities.js')
 process.exit = util.exit;
 
 
-program
-  .option('-c, --client <type>', 'Run the test with the specified client type [api]')
-  .parse(process.argv);
+program.parse(process.argv);
 
 
 // Get the parsed args from the CLI input
-var testValue = program.args[0];
-var testClient = program.client; 
+var testKeysString = program.args[0];
 
-if (!testClient) { testClient = 'api' }
-if (!testValue) { 
-	console.log('Please provide an input value to test. Wrap phrases in double-quotes. Type "nerul" for help.'); 
+
+if (!testKeysString) { 
+
+	console.log('Please provide an event value to test.');
+	// console.log('You can either:');
+	// console.log('1. Pass an argument to the "test" command (wrap phrases in double-quotes), or');
+	// console.log('2. Add a key called TEST_VALUE to your .env file.');
+	console.log('\r\nType "nerul" for more help.'); 
 	util.exit(1);
-}
+
+} else {
+
+	// Require the main interaction script
+	var script = require(process.cwd() + '/index.js');
 
 
-// Require the main interaction script
-var script = require(process.cwd() + '/index.js');
-
-
-// Setup the test data to pass into the interaction script
-var testEvent = {
-	value: testValue,
-	client: testClient
-}
-
-
-var testContext = {
-	done: function() {
-		console.log('Done.');
-	},
-
-	succeed: function(res) {
-		console.log('The test completed successfully!');
-		console.log('Your interaction returned:\r\n');
-		console.log(res);
-		console.log('\r\nType "Nerul upload" when you\'re ready to upload your interaction to Nerul.');
-	},
-
-	error: function(err) {
-		console.log(err);
+	// Setup the test data to pass into the interaction script
+	var testEvent = {
+		keys: JSON.parse(testKeysString),
+		user_id: 'test_user',
+		timestamp: Date.now()
 	}
-}
 
 
-// Run the handler method of the interaction script
-script.handler(testEvent, testContext);
+	var testContext = {
+		done: function() {
+			console.log('Done.');
+		},
+
+		succeed: function(res) {
+			console.log('The test completed successfully.');
+			console.log('Your node returned:\r\n');
+			console.log(res);
+			console.log('\r\nType "Nerul upload" when you\'re ready to upload your node to Nerul.');
+		},
+
+		error: function(err) {
+			console.log(err);
+		}
+	}
 
 
-if (!util.exit.exited) {
-	if(!program.args.length) {
-    program.help();
-  }
+	// Run the handler method of the interaction script
+	Promise.resolve(script.handler(testEvent, testContext)).then(() => util.exit(1));
+
+
+	if (!util.exit.exited) {
+		if(!program.args.length) {
+	    program.help();
+	  }
+	}
+	
 }
