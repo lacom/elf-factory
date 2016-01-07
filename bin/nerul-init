@@ -4,9 +4,10 @@ var program = require('commander');
 var path = require('path');
 var request = require('request');
 var netrc = require('node-netrc');
+var fs = require('fs');
 var config = require('../config')();
 var pkg = require(path.join(process.cwd(), 'package.json'));
-var util = require('../lib/utilities')
+var util = require('../lib/utilities');
 
 
 /**
@@ -31,9 +32,9 @@ program.parse(process.argv);
 
 
 // Create a new resource on the server
-createNode(function(err, status, message) {
+createNode(function(err, status, body) {
 	if (err || status === 500) {
-		console.log('ERROR: Something went wrong. Please contact us at support@lightningbot.com');
+		console.log('ERROR: Something went wrong. Please contact us at support@lightninginabot.com');
 		util.exit();
 	}
 
@@ -42,7 +43,14 @@ createNode(function(err, status, message) {
 	}
 
 	if (status === 200) {
-		return console.log('BEE BOP! Your node was successfully added to your account. Make sure to run the "upload" command to upload your node\'s code.');
+		var nodeId = JSON.parse(body).id.toString();
+		var str = '\r\nID='+nodeId;
+
+		// Save node id to local .env file
+		return fs.appendFile(path.join(process.cwd(), '.env'), str, function(err) {
+			if (err) console.log(err);
+			return console.log('BEE BOP! Your node was successfully added to your account. Make sure to run the "upload" command to upload your node\'s code.');
+		});
 	}
 
 	if (!util.exit.exited) {
@@ -65,6 +73,6 @@ function createNode(cb) {
 	  'auth': { 'bearer': auth.password },
 	  'form': { 'name' : pkg.name }
 	}, function(err, res, body) {
-		return cb(err, res.statusCode, body.message);
+		return cb(err, res.statusCode, body);
 	});
 }

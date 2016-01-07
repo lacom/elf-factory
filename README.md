@@ -5,3 +5,5 @@ A tool for developing nodes on the Nerul platform
 ```
 $ sudo npm install nerul -g
 ```
+## Requirements
+- Node v >= 4
