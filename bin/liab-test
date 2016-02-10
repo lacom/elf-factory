@@ -5,6 +5,7 @@ var fs = require('fs');
 var exec = require('child_process').exec;
 var path = require('path');
 var util = require('../lib/utilities.js')
+var config = require('../config')();
 
 
 // Re-assign process.exit because of commander
@@ -25,7 +26,7 @@ if (!testKeysString) {
 	// console.log('You can either:');
 	// console.log('1. Pass an argument to the "test" command (wrap phrases in double-quotes), or');
 	// console.log('2. Add a key called TEST_VALUE to your .env file.');
-	console.log('\r\nType "nerul" for more help.'); 
+	console.log('\r\nType "' + config.APP_NAME + '" for more help.'); 
 	util.exit(1);
 
 } else {
@@ -51,7 +52,7 @@ if (!testKeysString) {
 			console.log('The test completed successfully.');
 			console.log('Your node returned:\r\n');
 			console.log(res);
-			console.log('\r\nType "Nerul upload" when you\'re ready to upload your node to Nerul.');
+			console.log('\r\nType "' + config.APP_NAME + ' upload" when you\'re ready to upload your node to ' + config.APP_NAME + '.');
 		},
 
 		error: function(err) {

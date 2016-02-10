@@ -11,14 +11,9 @@ var util = require('../lib/utilities');
 
 
 /**
- * Loads the environment vars as set in the projects .env file.
- * SITE_URL and SITE_DOMAIN in .env will override the default url.
+ * Loads config vars as set in the project's .env file.
  */
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
-
-
-var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
-var SITE_URL = process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
 
 console.log('Talking to the mothership...');
 
@@ -28,7 +23,21 @@ process.exit = util.exit;
 
 
 // Parse the command for args and flags
-program.parse(process.argv);
+program
+	.option('-e, --environment <type>', 'If set to DEV, request goes to localhost.')
+	.parse(process.argv);
+
+// Set environment
+var env = program.environment ? program.environment.toLowerCase() : '';
+var PORT = 3000;
+
+if (env === 'dev' || env === 'development') {
+	var HOST = 'localhost:' + PORT;
+	var APP_URL = 'http://localhost:' + PORT + '/' + config.API_MAJOR_VERSION;
+} else {
+	var HOST = config.HOST;
+	var APP_URL = 'https://' + HOST + '/' + config.API_MAJOR_VERSION;
+}
 
 
 // Create a new resource on the server
@@ -44,7 +53,12 @@ createNode(function(err, status, body) {
 
 	if (status === 200) {
 		var nodeId = JSON.parse(body).id.toString();
-		var str = '\r\nID='+nodeId;
+		if (env === 'dev' || env === 'development') {
+			var str = '\r\nDEV_ID='+nodeId;
+		} else {
+			var str = '\r\nID='+nodeId;
+		}
+		
 
 		// Save node id to local .env file
 		return fs.appendFile(path.join(process.cwd(), '.env'), str, function(err) {
@@ -67,9 +81,9 @@ createNode(function(err, status, body) {
  */
 function createNode(cb) {
 	// Get auth creds from netrc file
-	var auth = netrc(SITE_DOMAIN);
+	var auth = netrc(HOST);
 
-	request.post(SITE_URL + '/nodes', {
+	request.post(APP_URL + '/nodes', {
 	  'auth': { 'bearer': auth.password },
 	  'form': { 'name' : pkg.name }
 	}, function(err, res, body) {

@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+/**
+ * TODO
+ *   - exclude .env file from dist package
+ */
+
 var program = require('commander');
 var fs = require('fs');
 var del = require('del');
@@ -16,15 +21,9 @@ var util = require('../lib/utilities');
 
 
 /**
- * Loads the environment vars as set in the projects .env file.
- * SITE_URL and SITE_DOMAIN in .env will override the default url.
+ * Loads config vars as set in the project's .env file.
  */
 require('dotenv').config({ path: path.join(process.cwd(), '.env') });
-
-
-var SITE_DOMAIN = process.env.SITE_DOMAIN ? process.env.SITE_DOMAIN : config.SITE_DOMAIN;
-var SITE_URL = process.env.SITE_URL ? process.env.SITE_URL : config.SITE_URL;
-var NODE_ID = process.env.ID ? process.env.ID : null;
 
 
 // Re-assign process.exit because of commander
@@ -33,7 +32,24 @@ process.exit = util.exit;
 
 
 // Parse the command for args and flags
-program.parse(process.argv);
+program
+	.option('-e, --environment <type>', 'If set to DEV, request goes to localhost.')
+	.parse(process.argv);
+
+
+// Set environment
+var env = program.environment ? program.environment.toLowerCase() : '';
+var PORT = 3000;
+
+if (env === 'dev' || env === 'development') {
+	var HOST = 'localhost:' + PORT;
+	var APP_URL = 'http://localhost:' + PORT + '/' + config.API_MAJOR_VERSION;
+	var NODE_ID = process.env.DEV_ID ? process.env.DEV_ID : null;
+} else {
+	var HOST = config.HOST;
+	var APP_URL = 'https://' + HOST + '/' + config.API_MAJOR_VERSION;
+	var NODE_ID = process.env.ID ? process.env.ID : null;
+}
 
 
 gulp.task('clean', function(cb) {
@@ -81,9 +97,9 @@ gulp.task('upload', function() {
 		'dist'	: fs.createReadStream('./dist.zip')
 	};
 	if (pkg.repository && pkg.repository.url) data.repo_url = pkg.repository.url;
-	var auth = netrc(SITE_DOMAIN);
+	var auth = netrc(HOST);
 	return request.post({
-		'url' 			: SITE_URL + '/nodes/' + NODE_ID + '/upload',
+		'url' 			: APP_URL + '/nodes/' + NODE_ID + '/upload',
 		'formData' 	: data,
 		'auth'			: { 'bearer' : auth.password }
 	}, function (err, res, body) {

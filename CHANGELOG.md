@@ -1,5 +1,8 @@
 Change Log
 - - -
+## v0.3.4 (2/10/16)
+- Improved handling of different environments; use -e CLI option to send request to localhost
+- New package name round 2! Hello, LIAB!
 ## v0.3.3 (1/7/16)
 - init command saves the node's id to projects .env file
 - upload command now uses update /nodes/{NODE_ID}/upload route

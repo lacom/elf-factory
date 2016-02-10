@@ -1,7 +1,7 @@
 {
-  "name": "nerul",
-  "description": "A tool for developing nodes on the Nerul platform",
-  "version": "0.3.3",
+  "name": "liab",
+  "description": "A tool for developing nodes on the Lightning In A Bot platform",
+  "version": "0.3.4",
   "license": "MIT",
   "author": "Dylan La Com <dylan.lacom@gmail.com>",
   "contributors": [
@@ -9,7 +9,7 @@
   ],
   "repository" : { 
   	"type" : "git", 
-  	"url" : "https://github.com/lacom/nerul-cli"
+  	"url" : "https://github.com/lacom/liab-cli"
   },
   "dependencies": {
     "commander": "2.7.1",
@@ -25,10 +25,10 @@
     "request": "^2.58.0",
     "run-sequence": "^1.1.2"
   },
-  "main": "bin/nerul",
+  "main": "bin/liab",
   "preferGlobal": true,
   "bin": {
-    "nerul": "./bin/nerul"
+    "liab": "./bin/liab"
   },
   "files": [
     "LICENSE",

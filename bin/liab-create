@@ -1,5 +1,10 @@
 #!/usr/bin/env node
 
+/**
+ * TODO
+ *   - Remove the dotenv require hook from 'index.js' template
+ */
+
 var program = require('commander');
 var path = require('path');
 var config = require('../config')();
@@ -21,10 +26,9 @@ program.parse(process.argv);
 if (program.args.length > 0) {
 	var name = program.args[0];
 } else {
-	console.log('You need to supply a name for your node. Type "nerul" for help.');
+	console.log('You need to supply a name for your node. Type "' + config.APP_NAME + '" for help.');
 	util.exit(1);
 }
-
 
 // Create a new interaction
 newInteraction(name);
