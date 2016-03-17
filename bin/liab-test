@@ -49,10 +49,8 @@ if (!testKeysString) {
 		},
 
 		succeed: function(res) {
-			console.log('The test completed successfully.');
-			console.log('Your node returned:\r\n');
+			console.log('Success! Your node returned:\r\n');
 			console.log(res);
-			console.log('\r\nType "' + config.APP_NAME + ' upload" when you\'re ready to upload your node to ' + config.APP_NAME + '.');
 		},
 
 		error: function(err) {
@@ -60,9 +58,18 @@ if (!testKeysString) {
 		}
 	}
 
+	// Start timer
+	var startTime = new Date();
 
 	// Run the handler method of the interaction script
-	Promise.resolve(script.handler(testEvent, testContext)).then(() => util.exit(1));
+	Promise.resolve(script.handler(testEvent, testContext)).then(() => {
+		var endTime = new Date();
+		var timeDiff = (endTime - startTime);
+		timeDiff /= 1000;
+		console.log('\r\nCompleted in ' + timeDiff + ' seconds.');
+		console.log('Type "' + config.APP_NAME + ' upload" when you\'re ready to upload your node to ' + config.APP_NAME + '.');
+		util.exit(1);
+	});
 
 
 	if (!util.exit.exited) {

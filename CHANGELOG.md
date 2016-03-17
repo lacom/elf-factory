@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.3.5 (3/17/16)
+- Happy birthday to me. What'd I get? A timer in the test method!
 ## v0.3.4 (2/10/16)
 - Improved handling of different environments; use -e CLI option to send request to localhost
 - New package name round 2! Hello, LIAB!
