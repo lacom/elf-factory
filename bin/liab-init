@@ -11,9 +11,10 @@ var util = require('../lib/utilities');
 
 
 /**
- * Loads config vars as set in the project's .env file.
+ * Loads config vars as set in the project's config.json file.
  */
-require('dotenv').config({ path: path.join(process.cwd(), '.env') });
+var projectConfig = require(path.join(process.cwd(), 'config.json'));
+
 
 console.log('Talking to the mothership...');
 
@@ -41,8 +42,8 @@ if (env === 'dev' || env === 'development') {
 
 
 // Create a new resource on the server
-createNode(function(err, status, body) {
-	if (err || status === 500) {
+createNode(function(status, body) {
+	if (status === 500) {
 		console.log('ERROR: Something went wrong. Please contact us at support@lightninginabot.com');
 		util.exit();
 	}
@@ -52,18 +53,20 @@ createNode(function(err, status, body) {
 	}
 
 	if (status === 200) {
+		console.log('BEE BOP! Your node was created successfully. Now saving the node Id to your config file...');
 		var nodeId = JSON.parse(body).id.toString();
 		if (env === 'dev' || env === 'development') {
-			var str = '\r\nDEV_ID='+nodeId;
+			projectConfig.dev_id = nodeId;
 		} else {
-			var str = '\r\nID='+nodeId;
+			projectConfig.id = nodeId
 		}
 		
 
 		// Save node id to local .env file
-		return fs.appendFile(path.join(process.cwd(), '.env'), str, function(err) {
+		return fs.writeFile(path.join(process.cwd(), 'config.json'), JSON.stringify(projectConfig, null, 2), function(err) {
 			if (err) console.log(err);
-			return console.log('BEE BOP! Your node was successfully added to your account. Make sure to run the "upload" command to upload your node\'s code.');
+			console.log('Success! Make sure to run the "upload" command to upload your node\'s code.');
+			return 
 		});
 	}
 
@@ -87,6 +90,7 @@ function createNode(cb) {
 	  'auth': { 'bearer': auth.password },
 	  'form': { 'name' : pkg.name }
 	}, function(err, res, body) {
-		return cb(err, res.statusCode, body);
+		if (err) console.log(err);
+		else return cb(res.statusCode, body);
 	});
 }

@@ -1,5 +1,10 @@
 Change Log
 - - -
+## v0.4 (4/7/16)
+- Removed "dotenv" dependency for projects
+- Updated liab-test to look for test cases in test.json, rather than being passed through command line
+- The test event in liab-test now contains a "bot" property to pass test bot objects into the node
+- Added config.json to store project info
 ## v0.3.5 (3/17/16)
 - Happy birthday to me. What'd I get? A timer in the test method!
 ## v0.3.4 (2/10/16)

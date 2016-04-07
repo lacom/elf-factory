@@ -106,9 +106,6 @@ function createInteraction(interactionName, path) {
   // JavaScript
   var index  = util.loadTemplate('index.js');
 
-  var envFile = '# Add environment vars to this file in the format of API_KEY=12345\r\n# One key/value pair per line';
-
-
 	util.mkdir(path, function() {
 
 	  // package.json
@@ -121,14 +118,28 @@ function createInteraction(interactionName, path) {
 	    license : '',
 	    private : true,
 	    scripts : { test: 'echo \"Error: no test specified\" && exit 1' },
-	    dependencies : {"dotenv": "^1.2.0"},
+	    dependencies : {},
 	    repository: { url: '' }
 	  };
 
+    // config.json
+    var config = {
+      id          : null,
+      expressions : [],
+      keys        : [],
+    };
+
+    // test.json
+    var test = {
+      bot  : null,
+      keys : []
+    };
+
 	  // write files
 	  util.write(path + '/package.json', JSON.stringify(pkg, null, 2));
+    util.write(path + '/config.json', JSON.stringify(config, null, 2));
+    util.write(path + '/test.json', JSON.stringify(test, null, 2));
 	  util.write(path + '/index.js', index);
-	  util.write(path + '/.env', envFile);
 
 	  complete();
 	});

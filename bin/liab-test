@@ -2,6 +2,7 @@
 
 var program = require('commander');
 var fs = require('fs');
+var prompt = require('prompt');
 var exec = require('child_process').exec;
 var path = require('path');
 var util = require('../lib/utilities.js')
@@ -15,48 +16,55 @@ process.exit = util.exit;
 
 program.parse(process.argv);
 
+// The index of the test keys to use
+var testIndex = (program.args.length > 0) ? (parseInt(program.args[0]) - 1) : 0;
 
-// Get the parsed args from the CLI input
-var testKeysString = program.args[0];
 
+// Require the main interaction script
+var script = require(process.cwd() + '/index.js');
+var tests = require(process.cwd() + '/test.json');
 
-if (!testKeysString) { 
-
-	console.log('Please provide an event value to test.');
-	// console.log('You can either:');
-	// console.log('1. Pass an argument to the "test" command (wrap phrases in double-quotes), or');
-	// console.log('2. Add a key called TEST_VALUE to your .env file.');
-	console.log('\r\nType "' + config.APP_NAME + '" for more help.'); 
-	util.exit(1);
-
+// Set the test keys
+if (tests.keys.length > 0 && testIndex <= tests.keys.length) {
+	var testKeys = tests.keys[testIndex];
 } else {
+	var testKeys = {};
+}
 
-	// Require the main interaction script
-	var script = require(process.cwd() + '/index.js');
+// Set the test event
+var testEvent = {
+	bot  : tests.bot,
+	keys : testKeys
+}
+	
+var testContext = {
+	done: function() {
+		console.log('Done.');
+	},
 
+	succeed: function(res) {
+		console.log(`\r\nTest ${testIndex + 1} returned:\r\n`);
+		console.log(res);
+	},
 
-	// Setup the test data to pass into the interaction script
-	var testEvent = {
-		keys: JSON.parse(testKeysString),
-		user_id: 'test_user',
-		timestamp: Date.now()
+	error: function(err) {
+		console.log(err);
 	}
+}
 
 
-	var testContext = {
-		done: function() {
-			console.log('Done.');
-		},
+// Prompt for empty key values, if any
+var emptyKeys = [];
+for (var keyName in testEvent.keys) {
+	if (!testEvent.keys[keyName]) emptyKeys.push(keyName);
+}
 
-		succeed: function(res) {
-			console.log('Success! Your node returned:\r\n');
-			console.log(res);
-		},
+prompt.message = "Enter a value for";
+prompt.start();
+prompt.get(emptyKeys, function (err, res) {
+	if (err) throw err;
 
-		error: function(err) {
-			console.log(err);
-		}
-	}
+	Object.assign(testEvent.keys, res);
 
 	// Start timer
 	var startTime = new Date();
@@ -70,12 +78,4 @@ if (!testKeysString) {
 		console.log('Type "' + config.APP_NAME + ' upload" when you\'re ready to upload your node to ' + config.APP_NAME + '.');
 		util.exit(1);
 	});
-
-
-	if (!util.exit.exited) {
-		if(!program.args.length) {
-	    program.help();
-	  }
-	}
-	
-}
+});
