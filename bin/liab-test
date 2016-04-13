@@ -53,6 +53,13 @@ var testContext = {
 }
 
 
+var testCallback = function(err, res) {
+	console.log(`\r\nTest ${testIndex + 1} returned:\r\n`);
+	if (err) console.log(err);
+	else console.log(res);
+}
+
+
 // Prompt for empty key values, if any
 var emptyKeys = [];
 for (var keyName in testEvent.keys) {
@@ -70,7 +77,7 @@ prompt.get(emptyKeys, function (err, res) {
 	var startTime = new Date();
 
 	// Run the handler method of the interaction script
-	Promise.resolve(script.handler(testEvent, testContext)).then(() => {
+	Promise.resolve(script.handler(testEvent, testContext, testCallback)).then(() => {
 		var endTime = new Date();
 		var timeDiff = (endTime - startTime);
 		timeDiff /= 1000;
