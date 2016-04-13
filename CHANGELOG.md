@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.1 (4/12/16)
+- Support for new "callback" argument in event.handler (only Node.js v4 Lambda runtime)
 ## v0.4 (4/7/16)
 - Removed "dotenv" dependency for projects
 - Updated liab-test to look for test cases in test.json, rather than being passed through command line
