@@ -34,6 +34,7 @@ if (tests.keys.length > 0 && testIndex <= tests.keys.length) {
 // Set the test event
 var testEvent = {
 	bot  : tests.bot,
+	host : tests.host,
 	keys : testKeys
 }
 	
