@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.3 (4/28/16)
+- Updated exports.handler boilerplate code to reflect Lambda Node.js v4 runtime changes
 ## v0.4.2 (4/27/16)
 - Added "host" property to "event" argument
 ## v0.4.1 (4/12/16)
