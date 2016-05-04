@@ -42,40 +42,42 @@ if (env === 'dev' || env === 'development') {
 
 
 // Create a new resource on the server
-createNode(function(status, body) {
-	if (status === 500) {
-		console.log('ERROR: Something went wrong. Please contact us at support@lightninginabot.com');
-		util.exit();
-	}
-
-	if (status === 400) {
-		return console.log('There is already a node with this name in your account. Use the "upload" command to update it.');
-	}
-
-	if (status === 200) {
-		console.log('BEE BOP! Your node was created successfully. Now saving the node Id to your config file...');
-		var nodeId = JSON.parse(body).id.toString();
-		if (env === 'dev' || env === 'development') {
-			projectConfig.dev_id = nodeId;
-		} else {
-			projectConfig.id = nodeId
+if(projectConfig.id && projectConfig.id != null){
+	console.log('Hmm... config.json has a populated ID field.\nUse \'liab upload\' to update node or remove id to allow for creation of new node.');
+	util.exit();
+}else{
+	createNode(function(status, body) {
+		if (status === 500) {
+			console.log('ERROR: Something went wrong. Please contact us at support@lightninginabot.com');
+			util.exit();
 		}
-		
 
-		// Save node id to local .env file
-		return fs.writeFile(path.join(process.cwd(), 'config.json'), JSON.stringify(projectConfig, null, 2), function(err) {
-			if (err) console.log(err);
-			console.log('Success! Make sure to run the "upload" command to upload your node\'s code.');
-			return 
-		});
-	}
+		if (status === 200) {
+			console.log('BEE BOP! Your node was created successfully. Now saving the node Id to your config file...');
+			var nodeId = JSON.parse(body).id.toString();
+			if (env === 'dev' || env === 'development') {
+				projectConfig.dev_id = nodeId;
+			} else {
+				projectConfig.id = nodeId
+			}
+			
 
-	if (!util.exit.exited) {
-		if(!program.args.length) {
-	    program.help();
-	  }
-	}
-});
+			// Save node id to local .env file
+			return fs.writeFile(path.join(process.cwd(), 'config.json'), JSON.stringify(projectConfig, null, 2), function(err) {
+				if (err) console.log(err);
+				console.log('Success! Make sure to run the "upload" command to upload your node\'s code.');
+				return 
+			});
+		}
+
+		if (!util.exit.exited) {
+			if(!program.args.length) {
+		    program.help();
+		  }
+		}
+	});
+}
+
 
 
 /**
@@ -85,7 +87,6 @@ createNode(function(status, body) {
 function createNode(cb) {
 	// Get auth creds from netrc file
 	var auth = netrc(HOST);
-
 	request.post(APP_URL + '/nodes', {
 	  'auth': { 'bearer': auth.password },
 	  'form': { 'name' : pkg.name }
