@@ -60,7 +60,6 @@ if(projectConfig.id && projectConfig.id != null){
 			} else {
 				projectConfig.id = nodeId
 			}
-			
 
 			// Save node id to local .env file
 			return fs.writeFile(path.join(process.cwd(), 'config.json'), JSON.stringify(projectConfig, null, 2), function(err) {

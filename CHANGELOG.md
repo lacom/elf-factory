@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.4 (5/4/16)
+- Added check for config.id in "init" command. Will prompt usage of "upload" command if Id exists.
 ## v0.4.3 (4/28/16)
 - Updated exports.handler boilerplate code to reflect Lambda Node.js v4 runtime changes
 ## v0.4.2 (4/27/16)
