@@ -47,8 +47,15 @@ if(projectConfig.id && projectConfig.id != null){
 	util.exit();
 }else{
 	createNode(function(status, body) {
+		//TODO Turning into switch case statement.
+
 		if (status === 500) {
 			console.log('ERROR: Something went wrong. Please contact us at support@lightninginabot.com');
+			util.exit();
+		}
+
+		if (status === 401){
+			console.log("Warning: Unauthorized. Please check your auth token in .netrc");
 			util.exit();
 		}
 
