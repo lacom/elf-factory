@@ -111,18 +111,17 @@ gulp.task('upload', function() {
 
 gulp.task('update',function(){
 	console.log('Updating node with configuration in config.json...')
-	var updateData = {
-		description: projectConfig.description ? projectConfig.description : null,
-		expressions: projectConfig.expressions ? projectConfig.expressions : null,
-		keys: projectConfig.keys ? projectConfig.keys: null
-	};
+	var data = {};
+  if (projectConfig.description) data.description = projectConfig.description;
+  if (projectConfig.expressions) data.expressions = projectConfig.expressions;
+  if (projectConfig.keys) data.keys = projectConfig.keys;
 	if (pkg.repository && pkg.repository.url) data.repo_url = pkg.repository.url;
 	var auth = netrc(HOST);
 	return request.post({
 		'url': APP_URL + '/nodes/' + NODE_ID,
 		'auth': { 'bearer' : auth.password },
 		'json': true,
-		'body' : updateData
+		'body' : data
 	}, function (err, res, body) {
 		if (err) { console.log("\n\nYour node was uploaded, but something went wrong updating its configuration.\nMake sure you config.json keys are properly formatted.\n" + err); }
 	});
@@ -145,5 +144,3 @@ gulp.start('tasks', function(err, res) {
 	if (err) { console.log(err); } 
 	util.exit(1);
 });
-
-

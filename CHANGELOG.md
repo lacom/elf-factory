@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.6 (5/24/16)
+- Fix: existing node properties won't be overwritten with null when uploading, if the properties exist on server but not in config.json
 ## v0.4.5 (5/24/16)
 - Node description, expressions, and keys can now be added to config.json and updated on the server when "liab upload" is called.
 ## v0.4.4 (5/4/16)
