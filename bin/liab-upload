@@ -125,7 +125,6 @@ gulp.task('update',function(){
 		'body' : updateData
 	}, function (err, res, body) {
 		if (err) { console.log("\n\nYour node was uploaded, but something went wrong updating its configuration.\nMake sure you config.json keys are properly formatted.\n" + err); }
-		console.log(body.message);
 	});
 
 })

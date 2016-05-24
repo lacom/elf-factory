@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.5 (5/24/16)
+- Node description, expressions, and keys can now be added to config.json and updated on the server when "liab upload" is called.
 ## v0.4.4 (5/4/16)
 - Added check for config.id in "init" command. Will prompt usage of "upload" command if Id exists.
 ## v0.4.3 (4/28/16)
