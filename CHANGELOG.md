@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.7 (5/31/16)
+- Now sending package.json and config.json to LIAB. Minor fix for local dev uploading
 ## v0.4.6 (5/24/16)
 - Fix: existing node properties won't be overwritten with null when uploading, if the properties exist on server but not in config.json
 ## v0.4.5 (5/24/16)

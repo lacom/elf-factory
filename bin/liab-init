@@ -29,10 +29,12 @@ program
 	.parse(process.argv);
 
 // Set environment
-var env = program.environment ? program.environment.toLowerCase() : '';
 var PORT = 3000;
+var env = program.environment ? program.environment.toLowerCase() : '';
+if (env === 'dev' || env === 'development') env = 'DEV';
+else env = 'PROD';
 
-if (env === 'dev' || env === 'development') {
+if (env === 'DEV') {
 	var HOST = 'localhost:' + PORT;
 	var APP_URL = 'http://localhost:' + PORT + '/' + config.API_MAJOR_VERSION;
 } else {
@@ -42,10 +44,13 @@ if (env === 'dev' || env === 'development') {
 
 
 // Create a new resource on the server
-if(projectConfig.id && projectConfig.id != null){
-	console.log('Hmm... config.json has a populated ID field.\nUse \'liab upload\' to update node or remove id to allow for creation of new node.');
+if (env === 'DEV' && projectConfig.dev_id && projectConfig.dev_id != null) {
+	console.log('Hmm... config.json has a populated "dev_id" property.\nUse \'liab upload -e dev\' to update node or remove the Id to allow for creation of a new node.');
 	util.exit();
-}else{
+} else if (env === 'PROD' && projectConfig.id && projectConfig.id != null){
+	console.log('Hmm... config.json has a populated "id" property.\nUse \'liab upload\' to update node or remove the Id to allow for creation of a new node.');
+	util.exit();
+} else {
 	createNode(function(status, body) {
 		//TODO Turning into switch case statement.
 
@@ -62,7 +67,7 @@ if(projectConfig.id && projectConfig.id != null){
 		if (status === 200) {
 			console.log('BEE BOP! Your node was created successfully. Now saving the node Id to your config file...');
 			var nodeId = JSON.parse(body).id.toString();
-			if (env === 'dev' || env === 'development') {
+			if (env === 'DEV') {
 				projectConfig.dev_id = nodeId;
 			} else {
 				projectConfig.id = nodeId

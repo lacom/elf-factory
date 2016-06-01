@@ -23,10 +23,20 @@ Running the init command creates the necessary resources on the server. When the
 Runnin the upload command creates the necessary resources locally that are the send to the server. You may use this command is used to update nodes as well. Make sure there is a valid node ID in the config.json file along with valid inputs for updatable keys (code will be updated so long as changes are saved). An example config.json:
 
 	{
-  		"id": "56ac2407dbc0091100e9a524",
- 		 "expressions": ["An expression", "another expression"],
- 		 "description": "This is a description",
- 		 "keys": [{"name":"entity_name"},{"name":"another_entitiy_name"}]
+  	"id": "56ac2407dbc0091100e9a524",
+ 		"expressions": ["An expression", "another expression"],
+ 		"description": "This is a description",
+ 		"keys": [
+      {"name":"count"},
+      {
+        "name":"datetime",
+        "type":"datetime"
+      },
+      {
+        "name":"is_plural",
+        "type":"boolean"
+      }
+    ]
 	}
 
 ##### Warning: DO NOT change ID during upload. It will fail to correctly update your ndoe.
