@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.8 (7/22/16)
+- liab-upload will now look for a filters.js file to include in the dist
 ## v0.4.7 (5/31/16)
 - Now sending package.json and config.json to LIAB. Minor fix for local dev uploading
 ## v0.4.6 (5/24/16)
