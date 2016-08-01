@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.9 (8/1/16)
+- node domain names can now be added to project config files
 ## v0.4.8 (7/22/16)
 - liab-upload will now look for a filters.js file to include in the dist
 ## v0.4.7 (5/31/16)
