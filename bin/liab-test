@@ -22,21 +22,16 @@ var testIndex = (program.args.length > 0) ? (parseInt(program.args[0]) - 1) : 0;
 
 // Require the main interaction script
 var script = require(process.cwd() + '/index.js');
-var tests = require(process.cwd() + '/test.json');
+var testEvent = require(process.cwd() + '/test.json');
+
 
 // Set the test keys
-if (tests.keys.length > 0 && testIndex <= tests.keys.length) {
-	var testKeys = tests.keys[testIndex];
+if (testEvent.keys.length > 0 && testIndex <= testEvent.keys.length) {
+	testEvent.keys = testEvent.keys[testIndex];
 } else {
-	var testKeys = {};
+	testEvent.keys = {};
 }
 
-// Set the test event
-var testEvent = {
-	bot  : tests.bot,
-	host : tests.host,
-	keys : testKeys
-}
 	
 var testContext = {
 	done: function() {

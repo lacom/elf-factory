@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.10 (8/2/16)
+- testEvent now dynamically loads what is assigned in test.json.
 ## v0.4.9 (8/1/16)
 - node domain names can now be added to project config files
 ## v0.4.8 (7/22/16)
