@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.10 (8/7/16)
+- fix liab-upload success message. '/upload' is now returning an updated node object, rather than success message 
 ## v0.4.9 (8/1/16)
 - node domain names can now be added to project config files
 ## v0.4.8 (7/22/16)

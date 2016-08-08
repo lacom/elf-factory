@@ -1,7 +1,7 @@
 {
   "name": "liab",
   "description": "A tool for developing nodes on the Lightning in a Bot platform",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "license": "MIT",
   "author": "Dylan La Com <dylan.lacom@gmail.com>",
   "contributors": [

@@ -97,8 +97,8 @@ gulp.task('upload', function() {
 		'auth'			: { 'bearer' : auth.password }
 	}, function (err, res, body) {
 		if (err) { console.log(err); }
-		var message = JSON.parse(body).message;
-		console.log('\r\n' + message);
+		else if (JSON.parse(body).id) console.log('\r\n' + 'Woo! Node was uploaded successfully.'); 
+    else console.log('\r\n' + 'Hmm...something was funky on that upload. Status code: ' + res.statusCode); 
 	});
 });
 
