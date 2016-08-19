@@ -54,7 +54,7 @@ if (env === 'dev' || env === 'development') {
 
 gulp.task('clean', function(cb) {
 	console.log('Cleaning dist files...');
-  return del('./dist',
+  return del('./dist/*',
     del('./dist.zip', cb)
   );
 });
@@ -64,6 +64,12 @@ gulp.task('js', function() {
 	console.log('Creating new dist files...');
   return gulp.src(['index.js', 'filters.js', 'package.json', 'config.json'])
     .pipe(gulp.dest('dist/'))
+});
+
+gulp.task('lib', function() {
+	console.log('Creating new lib files for dist...');
+  return gulp.src(['lib/*'])
+    .pipe(gulp.dest('dist/lib/'))
 });
  
 
@@ -125,7 +131,7 @@ gulp.task('update',function(){
 gulp.task('tasks', function(callback) {
   return runSequence(
     ['clean'],
-    ['js', 'npm'],
+    ['js', 'lib', 'npm'],
     ['zip'],
     ['upload'],
     ['update'],
