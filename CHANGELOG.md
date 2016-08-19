@@ -1,6 +1,8 @@
 Change Log
 - - -
-$$ v0.4.12 (8/19/16)
+## v0.4.12 (8/19/16)
+- only index.js, package.json, and config.json checked at top level of node directory. all other files (including filters.js) must be placed in lib directory of node.
+## v0.4.12 (8/19/16)
 -  New gulp task to add lib folder to dis/. Cleanup now will remove all files AND folders from dist/
 ## v0.4.11 (8/7/16)
 - fix liab-upload success message. '/upload' is now returning an updated node object, rather than success message 
