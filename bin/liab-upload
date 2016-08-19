@@ -62,7 +62,7 @@ gulp.task('clean', function(cb) {
 
 gulp.task('js', function() {
 	console.log('Creating new dist files...');
-  return gulp.src(['index.js', 'filters.js', 'package.json', 'config.json'])
+  return gulp.src(['index.js', 'package.json', 'config.json'])
     .pipe(gulp.dest('dist/'))
 });
 
