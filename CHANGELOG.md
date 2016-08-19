@@ -1,5 +1,7 @@
 Change Log
 - - -
+$$ v0.4.12 (8/19/16)
+-  New gulp task to add lib folder to dis/. Cleanup now will remove all files AND folders from dist/
 ## v0.4.11 (8/7/16)
 - fix liab-upload success message. '/upload' is now returning an updated node object, rather than success message 
 ## v0.4.10 (8/2/16)
