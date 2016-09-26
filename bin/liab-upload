@@ -22,8 +22,10 @@ var util = require('../lib/utilities');
 
 /**
  * Loads config vars as set in the project's config.json file.
+ * devConfig.json will contain development vars not intended for version control/production.
  */
 var projectConfig = require(path.join(process.cwd(), 'config.json'));
+var devConfig = require(path.join(process.cwd(), 'devConfig.json'));
 
 
 // Re-assign process.exit because of commander
@@ -44,7 +46,7 @@ var PORT = 3000;
 if (env === 'dev' || env === 'development') {
 	var HOST = 'localhost:' + PORT;
 	var APP_URL = 'http://localhost:' + PORT + '/' + config.API_MAJOR_VERSION;
-	var NODE_ID = projectConfig.dev_id ? projectConfig.dev_id : null;
+	var NODE_ID = devConfig.dev_id ? devConfig.dev_id : null;
 } else {
 	var HOST = config.HOST;
 	var APP_URL = 'https://' + HOST + '/' + config.API_MAJOR_VERSION;

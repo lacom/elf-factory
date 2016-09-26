@@ -14,6 +14,7 @@ var util = require('../lib/utilities');
  * Loads config vars as set in the project's config.json file.
  */
 var projectConfig = require(path.join(process.cwd(), 'config.json'));
+var devConfig = require(path.join(process.cwd(), 'devConfig.json'));
 
 
 console.log('Talking to the mothership...');
@@ -44,8 +45,8 @@ if (env === 'DEV') {
 
 
 // Create a new resource on the server
-if (env === 'DEV' && projectConfig.dev_id && projectConfig.dev_id != null) {
-	console.log('Hmm... config.json has a populated "dev_id" property.\nUse \'liab upload -e dev\' to update node or remove the Id to allow for creation of a new node.');
+if (env === 'DEV' && devConfig.dev_id && devConfig.dev_id != null) {
+	console.log('Hmm... devConfig.json has a populated "dev_id" property.\nUse \'liab upload -e dev\' to update node or remove the Id to allow for creation of a new node.');
 	util.exit();
 } else if (env === 'PROD' && projectConfig.id && projectConfig.id != null){
 	console.log('Hmm... config.json has a populated "id" property.\nUse \'liab upload\' to update node or remove the Id to allow for creation of a new node.');
@@ -68,17 +69,25 @@ if (env === 'DEV' && projectConfig.dev_id && projectConfig.dev_id != null) {
 			console.log('BEE BOP! Your node was created successfully. Now saving the node Id to your config file...');
 			var nodeId = JSON.parse(body).id.toString();
 			if (env === 'DEV') {
-				projectConfig.dev_id = nodeId;
+				// Save node id to local devConfig.json file
+				devConfig.dev_id = nodeId;
+				return fs.writeFile(path.join(process.cwd(), 'devConfig.json'), JSON.stringify(devConfig, null, 2),
+					function(err){
+						if(err) console.log(err)
+						else console.log('Success! Local vars saved. Make sure to run the "upload" command to upload your node\'s code to you development environment.');
+					})
+
 			} else {
 				projectConfig.id = nodeId
+				// Save node id to local congif.json file
+				return fs.writeFile(path.join(process.cwd(), 'config.json'), JSON.stringify(projectConfig, null, 2), function(err) {
+					if (err) console.log(err);
+					else console.log('Success! Make sure to run the "upload" command to upload your node\'s code to the production environment.');
+				});
+				
 			}
 
-			// Save node id to local .env file
-			return fs.writeFile(path.join(process.cwd(), 'config.json'), JSON.stringify(projectConfig, null, 2), function(err) {
-				if (err) console.log(err);
-				console.log('Success! Make sure to run the "upload" command to upload your node\'s code.');
-				return 
-			});
+			
 		}
 
 		if (!util.exit.exited) {
