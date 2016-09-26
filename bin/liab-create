@@ -127,11 +127,6 @@ function createInteraction(interactionName, path) {
       keys        : [],
     };
 
-    // devConfig.json
-    var devConfig = {
-      dev_id: null
-    };
-
     // test.json
     var test = {
       bot  : null,
@@ -141,7 +136,6 @@ function createInteraction(interactionName, path) {
 	  // write files
 	  util.write(path + '/package.json', JSON.stringify(pkg, null, 2));
     util.write(path + '/config.json', JSON.stringify(config, null, 2));
-    util.write(path + '/devConfig.json', JSON.stringify(devConfig, null, 2));
     util.write(path + '/test.json', JSON.stringify(test, null, 2));
 	  util.write(path + '/index.js', index);
 

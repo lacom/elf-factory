@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.15 (9/26/16)
+-- devConfig created only when using liab init -e dev and not in liab create. liab init for a production environment does not create the file
 ## v0.4.14 (9/26/16)
 - development id's for creating, initializing, and uploading nodes in development environment obtained through devCongif.json file which will now be ignored in liabnodes.
 ## v0.4.13 (8/19/16)

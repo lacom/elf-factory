@@ -5,6 +5,7 @@ var path = require('path');
 var request = require('request');
 var netrc = require('node-netrc');
 var fs = require('fs');
+var async = require('async');
 var config = require('../config')();
 var pkg = require(path.join(process.cwd(), 'package.json'));
 var util = require('../lib/utilities');
@@ -14,10 +15,6 @@ var util = require('../lib/utilities');
  * Loads config vars as set in the project's config.json file.
  */
 var projectConfig = require(path.join(process.cwd(), 'config.json'));
-var devConfig = require(path.join(process.cwd(), 'devConfig.json'));
-
-
-console.log('Talking to the mothership...');
 
 // Re-assign process.exit because of commander
 // TODO: Switch to a different command framework
@@ -38,11 +35,25 @@ else env = 'PROD';
 if (env === 'DEV') {
 	var HOST = 'localhost:' + PORT;
 	var APP_URL = 'http://localhost:' + PORT + '/' + config.API_MAJOR_VERSION;
+	var devConfig;
+	try{
+		devConfig = require(path.join(process.cwd(), 'devConfig.json'))
+	}catch(e){
+		var devConfiguration = {dev_id:null};
+		console.log('devConfig.json does not exist. Creating file:');
+		util.write(path.join(process.cwd(), 'devConfig.json'), JSON.stringify(devConfiguration, null, 2))
+		try{
+			devConfig = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'devConfig.json'), 'utf-8'))
+		}catch(err){
+			throw err
+		}
+	}
 } else {
 	var HOST = config.HOST;
 	var APP_URL = 'https://' + HOST + '/' + config.API_MAJOR_VERSION;
 }
 
+console.log('Talking to the mothership...');
 
 // Create a new resource on the server
 if (env === 'DEV' && devConfig.dev_id && devConfig.dev_id != null) {
