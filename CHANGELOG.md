@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.16 (9/27/16)
+-- minor fixes for liab-init and liab-upload
 ## v0.4.15 (9/26/16)
 -- devConfig created only when using liab init -e dev and not in liab create. liab init for a production environment does not create the file
 ## v0.4.14 (9/26/16)
