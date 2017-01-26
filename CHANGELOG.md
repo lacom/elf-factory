@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.18 (01/25/17)
+-- Updating parsing of config flags to use if ('some_key' in ProjectConfigs) to test if key exists rather than check if object populated.
 ## v0.4.17 (01/25/17)
 -- error message update and parsing report_buidler boolean flag from config.json
 ## v0.4.16 (9/27/16)
