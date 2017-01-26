@@ -39,6 +39,6 @@ Runnin the upload command creates the necessary resources locally that are the s
     ]
 	}
 
-##### Warning: DO NOT change ID during upload. It will fail to correctly update your ndoe.
+##### Warning: DO NOT change ID during upload. It will fail to correctly update your node.
 
 

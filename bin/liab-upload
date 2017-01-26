@@ -106,7 +106,7 @@ gulp.task('upload', function() {
 	}, function (err, res, body) {
 		if (err) { console.log(err); }
 		else if (JSON.parse(body).id) console.log('\r\n' + 'Woo! Node was uploaded successfully.'); 
-    else console.log('\r\n' + 'Hmm...something was funky on that upload. Status code: ' + res.statusCode); 
+    	else console.log(`Hmm...something was funky on that upload. Status code: ${res.statusCode} \n Body: ${body}`); 
 	});
 });
 
@@ -117,6 +117,7 @@ gulp.task('update',function(){
   if (projectConfig.expressions) data.expressions = projectConfig.expressions;
   if (projectConfig.domain) data.domain = projectConfig.domain;
   if (projectConfig.keys) data.keys = projectConfig.keys;
+  if (projectConfig.report_builder) data.report_builder = projectConfig.report_builder;
 	if (pkg.repository && pkg.repository.url) data.repo_url = pkg.repository.url;
 	var auth = netrc(HOST);
 	return request.post({
