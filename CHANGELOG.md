@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.4.17 (01/25/17)
+-- error message update and parsing report_buidler boolean flag from config.json
 ## v0.4.16 (9/27/16)
 -- minor fixes for liab-init and liab-upload
 ## v0.4.15 (9/26/16)
