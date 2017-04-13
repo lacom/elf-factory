@@ -118,7 +118,8 @@ gulp.task('update',function(){
   if ('domain' in projectConfig) data.domain = projectConfig.domain;
   if ('keys' in projectConfig) data.keys = projectConfig.keys;
   if ('report_builder' in projectConfig) data.report_builder = projectConfig.report_builder;
-	if (pkg.repository && pkg.repository.url) data.repo_url = pkg.repository.url;
+  if (pkg.name) data.name = pkg.name;
+  if (pkg.repository && pkg.repository.url) data.repo_url = pkg.repository.url;
 	var auth = netrc(HOST);
 	return request.post({
 		'url': APP_URL + '/nodes/' + NODE_ID,

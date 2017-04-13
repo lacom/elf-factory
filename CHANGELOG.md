@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.5.0 (4/12/17)
+-- liab-upload command will now update the node name if it has changed
 ## v0.4.18 (01/25/17)
 -- Updating parsing of config flags to use if ('some_key' in ProjectConfigs) to test if key exists rather than check if object populated.
 ## v0.4.17 (01/25/17)
