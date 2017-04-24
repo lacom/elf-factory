@@ -1,17 +1,18 @@
 #!/usr/bin/env node
 
+var util = require('util');
 var program = require('commander');
 var fs = require('fs');
 var prompt = require('prompt');
 var exec = require('child_process').exec;
 var path = require('path');
-var util = require('../lib/utilities.js')
+var utils = require('../lib/utilities.js')
 var config = require('../config')();
 
 
 // Re-assign process.exit because of commander
 // TODO: Switch to a different command framework
-process.exit = util.exit;
+process.exit = utils.exit;
 
 
 program.parse(process.argv);
@@ -40,7 +41,7 @@ var testContext = {
 
 	succeed: function(res) {
 		console.log(`\r\nTest ${testIndex + 1} returned:\r\n`);
-		console.log(res);
+		console.log(util.inspect(res, false, 4));
 	},
 
 	error: function(err) {
@@ -52,7 +53,7 @@ var testContext = {
 var testCallback = function(err, res) {
 	console.log(`\r\nTest ${testIndex + 1} returned:\r\n`);
 	if (err) console.log(err);
-	else console.log(res);
+	else console.log(util.inspect(res, false, 4));
 }
 
 
@@ -79,6 +80,6 @@ prompt.get(emptyKeys, function (err, res) {
 		timeDiff /= 1000;
 		console.log('\r\nCompleted in ' + timeDiff + ' seconds.');
 		console.log('Type "' + config.APP_NAME + ' upload" when you\'re ready to upload your node to ' + config.APP_NAME + '.');
-		util.exit(1);
+		utils.exit(1);
 	});
 });

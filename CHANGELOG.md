@@ -1,5 +1,7 @@
 Change Log
 - - -
+## v0.5.1 (4/24/17)
+-- liab-test will now utilizes util.inspect to display deep objects
 ## v0.5.0 (4/12/17)
 -- liab-upload command will now update the node name if it has changed
 ## v0.4.18 (01/25/17)
