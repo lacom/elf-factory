@@ -1,5 +1,8 @@
 Change Log
 - - -
+## v0.6.0 (7/3/18)
+-- liab-upload no longer updates node's config attributes, and only updates node's code
+-- use of util.inspect in liab-test fixed to display complete result object
 ## v0.5.1 (4/24/17)
 -- liab-test will now utilizes util.inspect to display deep objects
 ## v0.5.0 (4/12/17)

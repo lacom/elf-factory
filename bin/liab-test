@@ -53,7 +53,7 @@ var testContext = {
 var testCallback = function(err, res) {
 	console.log(`\r\nTest ${testIndex + 1} returned:\r\n`);
 	if (err) console.log(err);
-	else console.log(util.inspect(res, false, 4));
+	else console.log(util.inspect(res, false, null));
 }
 
 
